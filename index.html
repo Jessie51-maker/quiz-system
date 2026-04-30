@@ -1,138 +1,115 @@
 <!DOCTYPE html>
-
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>線上複習系統</title>
+<title>線上測驗系統</title>
 <style>
-body {
-  font-family: Arial;
-  max-width: 700px;
-  margin: auto;
-  padding: 20px;
-}
-h1 { text-align: center; }
-button {
-  margin: 5px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-.correct { color: green; }
-.wrong { color: red; }
-.box {
-  border: 1px solid #ccc;
-  padding: 15px;
-  border-radius: 10px;
-}
+body { font-family: Arial; padding:20px; }
+.question { margin-bottom:20px; }
+.correct { color:green; }
+.wrong { color:red; }
+button { padding:10px 20px; font-size:16px; }
 </style>
 </head>
-
 <body>
 
-<h1>📘 線上複習系統</h1>
+<h1>📘 ACA 題庫測驗</h1>
 
-<div class="box">
-  <h2 id="question"></h2>
-  <div id="options"></div>
-</div>
+<form id="quizForm"></form>
 
-<br>
+<button onclick="submitQuiz()">提交答案</button>
 
-<button onclick="submitAnswer()">提交答案</button> <button onclick="nextQuestion()">下一題</button> <button onclick="showWrong()">只看錯題</button> <button onclick="resetWrong()">清除錯題</button>
-
-<p id="result"></p>
+<h2 id="result"></h2>
 
 <script>
-// ===== 題庫 =====
-let originalData = [
-{"id":1,"question":"為了方便不同類型檔案切換不同工作區,還可以從哪裡切換?","options":["檔案>建立新檢閱","視窗>延伸功能>CS Review","視窗>工作區","檢視>螢幕模式"],"answer":[2],"explanation":"從視窗>工作區"},
-{"id":2,"question":"確認版面外觀應用哪個原則?","options":["強調","視野","三分法","影像方向"],"answer":[1],"explanation":"視野影響整體觀看"},
-{"id":3,"question":"新增工作區域可儲存哪些設定(選二)?","options":["鍵盤快速鍵","顏色設定","選單","預設集管理員"],"answer":[0,2],"explanation":"鍵盤與選單"},
-{"id":4,"question":"哪種圖像不受解析度影響?","options":["像素","連續像素","線條曲線","固定矩陣"],"answer":[2],"explanation":"向量圖"},
-{"id":5,"question":"點陣圖基本單位?","options":["點","像素","公厘","公分"],"answer":[1],"explanation":"pixel"},
-{"id":6,"question":"哪個錯誤?","options":["向量適合簡單","檔案不隨尺寸變","向量與解析度相關","點陣適合複雜"],"answer":[2],"explanation":"向量不受解析度"},
-{"id":7,"question":"5000x3000像素200ppi尺寸?","options":["25x15英吋","15x25英吋","50x30英吋","5x3英吋"],"answer":[0],"explanation":"5000/200=25"},
-{"id":8,"question":"120lpi需多少dpi?","options":["300","240","150","120"],"answer":[1],"explanation":"約2倍"},
-{"id":9,"question":"印刷用?","options":["Lab72dpi","CMYK300dpi","RGB72dpi","索引300dpi"],"answer":[1],"explanation":"CMYK300dpi"},
-{"id":10,"question":"未壓縮格式?","options":["JPEG","掃描影像","靜態視訊","Camera RAW"],"answer":[3],"explanation":"RAW未壓縮"},
-{"id":11,"question":"Bridge主要功能?","options":["建立文件","整合影像","管理檔案","轉換格式"],"answer":[2],"explanation":"Bridge用來管理"},
-{"id":12,"question":"負片如何輸入Photoshop?","options":["開啟TIFF","輸入照片","輸入設備","開啟RAW"],"answer":[2],"explanation":"需輸入設備"},
-{"id":13,"question":"Camera Raw像什麼?","options":["負片","後處理","修片","黑白"],"answer":[0],"explanation":"像數位負片"},
-{"id":14,"question":"Camera Raw如何建立?","options":["Bridge","Photoshop","數位相機","轉換"],"answer":[2],"explanation":"相機建立"},
-{"id":15,"question":"轉換幻燈片最重要?","options":["解析度","時間","不傷原稿","典藏"],"answer":[2],"explanation":"保護原稿"},
-{"id":16,"question":"放大影像用?","options":["縱橫","最接近像素","更銳利","更平滑"],"answer":[3],"explanation":"放大用平滑"},
-{"id":17,"question":"縮放維持比例?","options":["Ctrl","拖拉","Shift","旋轉"],"answer":[2],"explanation":"Shift保持比例"},
-{"id":18,"question":"三分法?","options":["三條線","多條線","三等分","九宮格"],"answer":[3],"explanation":"九宮格"},
-{"id":19,"question":"參考線錯誤(選二)?","options":["不可移動","不可改色","可輸入數值","可清除"],"answer":[0,1],"explanation":"前兩錯"},
-{"id":20,"question":"相交選取快捷鍵?","options":["Ctrl+Shift","Shift","Alt","Shift+Alt"],"answer":[3],"explanation":"Shift+Alt"}
+
+const quizData = [
+{
+q:"1. 為了方便不同類型檔案切換不同工作區，可以從哪裡切換？",
+options:["A 檔案","B 視窗>延伸功能","C 視窗>工作區","D 檢視"],
+answer:"C"
+},
+{
+q:"2. 在確認版面外觀時應用哪個設計原則？",
+options:["A 強調","B 視野","C 三分法","D 影像方向"],
+answer:"B"
+},
+{
+q:"3. 何種圖像格式不受解析度影響？",
+options:["A 像素圖","B 解析度圖","C 向量圖","D 點陣圖"],
+answer:"C"
+},
+{
+q:"4. 點陣圖最基本單位？",
+options:["A 點","B 像素","C 公分","D 公厘"],
+answer:"B"
+},
+{
+q:"5. 影像5000x3000、200ppi尺寸？",
+options:["A 25x15","B 15x25","C 50x30","D 5x3"],
+answer:"A"
+},
+{
+q:"6. Camera Raw檔案在哪建立？",
+options:["A Bridge","B Photoshop","C 相機","D 轉換"],
+answer:"C"
+},
+{
+q:"7. 哪個適合放大影像？",
+options:["A 最近像素","B 雙線性","C 銳利","D 平滑"],
+answer:"D"
+},
+{
+q:"8. 三分法是？",
+options:["A 三條線","B 九等分亂","C 三等分","D 九宮格"],
+answer:"D"
+},
+{
+q:"9. Photoshop遮色片黑色效果？",
+options:["A 顯示","B 隱藏","C 強調","D 羽化"],
+answer:"B"
+},
+{
+q:"10. 商業印刷解析度？",
+options:["A 72dpi","B 300dpi CMYK","C RGB","D 索引色"],
+answer:"B"
+}
 ];
 
-// ===== 系統邏輯 =====
-let quizData = [...originalData];
-let current = 0;
-let selected = [];
-let wrong = JSON.parse(localStorage.getItem("wrong") || "[]");
+const form = document.getElementById("quizForm");
 
-function loadQuestion(){
-  selected = [];
-  let q = quizData[current];
-  document.getElementById("question").innerText = `第 ${current+1} 題：` + q.question;
+quizData.forEach((q,i)=>{
+let div = document.createElement("div");
+div.classList.add("question");
 
-  let html = "";
-  q.options.forEach((opt,i)=>{
-    html += `<label><input type="checkbox" onclick="toggle(${i})"> ${opt}</label><br>`;
-  });
+let html = `<p>${q.q}</p>`;
 
-  document.getElementById("options").innerHTML = html;
-  document.getElementById("result").innerText = "";
+q.options.forEach(opt=>{
+html += `
+<label>
+<input type="radio" name="q${i}" value="${opt[0]}">
+${opt}
+</label><br>`;
+});
+
+div.innerHTML = html;
+form.appendChild(div);
+});
+
+function submitQuiz(){
+let score = 0;
+
+quizData.forEach((q,i)=>{
+let ans = document.querySelector(`input[name="q${i}"]:checked`);
+if(ans && ans.value === q.answer){
+score++;
+}
+});
+
+document.getElementById("result").innerText =
+`你的分數：${score} / ${quizData.length}`;
 }
 
-function toggle(i){
-  if(selected.includes(i)){
-    selected = selected.filter(x=>x!==i);
-  }else{
-    selected.push(i);
-  }
-}
-
-function submitAnswer(){
-  let q = quizData[current];
-  let correct = JSON.stringify(selected.sort()) === JSON.stringify(q.answer.sort());
-
-  if(correct){
-    result.innerHTML = "<span class='correct'>✅ 正確</span><br>" + q.explanation;
-  }else{
-    result.innerHTML = "<span class='wrong'>❌ 錯誤</span><br>" + q.explanation;
-    wrong.push(q);
-    localStorage.setItem("wrong", JSON.stringify(wrong));
-  }
-}
-
-function nextQuestion(){
-  current = (current + 1) % quizData.length;
-  loadQuestion();
-}
-
-function showWrong(){
-  if(wrong.length === 0){
-    alert("目前沒有錯題");
-    return;
-  }
-  quizData = wrong;
-  current = 0;
-  loadQuestion();
-}
-
-function resetWrong(){
-  localStorage.removeItem("wrong");
-  wrong = [];
-  quizData = [...originalData];
-  alert("錯題已清除");
-  loadQuestion();
-}
-
-// 啟動
-loadQuestion();
 </script>
 
 </body>
