@@ -3,108 +3,297 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>完整題庫測驗系統</title>
+<title>題庫練習系統</title>
 <style>
 body { font-family: Arial; padding: 20px; }
-h3 { margin-bottom: 5px; }
+.question { margin-bottom: 20px; }
 .correct { color: green; }
 .wrong { color: red; }
+button { margin-top: 20px; }
 </style>
 </head>
 
 <body>
 
-<h1>完整題庫測驗</h1>
+<h1>題庫練習</h1>
 <div id="quiz"></div>
-<button onclick="submitQuiz()">交卷</button>
-<h2 id="result"></h2>
+<button onclick="resetQuiz()">重新練習</button>
 
 <script>
-
-/* ===== 完整題庫（已去重複＋分類）===== */
 const questions = [
 
 /* ===== Photoshop ===== */
 
-{ id:1,type:"single",q:"切換工作區位置?",o:["A 檔案","B 延伸","C 工作區","D 螢幕"],a:["C"]},
-{ id:2,type:"single",q:"版面外觀原則?",o:["A 強調","B 視野","C 三分法","D 方向"],a:["B"]},
-{ id:3,type:"multiple",q:"工作區儲存?",o:["A 快捷鍵","B 顏色","C 選單","D 預設"],a:["A","C"]},
-{ id:4,type:"single",q:"不受解析度?",o:["A 像素","B 解析","C 向量","D 點"],a:["C"]},
-{ id:5,type:"single",q:"點陣單位?",o:["A 點","B 像素","C 公厘","D 公分"],a:["B"]},
-{ id:6,type:"single",q:"錯誤敘述?",o:["A 向量適單純","B 容量不變","C 與解析度相關","D 點陣適複雜"],a:["C"]},
-{ id:7,type:"single",q:"尺寸?",o:["A 25x15","B 15x25","C 50x30","D 5x3"],a:["A"]},
-{ id:8,type:"single",q:"120lpi?",o:["A300","B240","C150","D120"],a:["B"]},
-{ id:9,type:"single",q:"印刷?",o:["A72dpi","B300 CMYK","C RGB72","D index"],a:["B"]},
+{
+id:1,type:"single",
+q:"為了方便不同類型檔案切換不同工作區,除了利用上方的「工作區切換器」中選取預設的工作區之外,還可以從哪裡切換?",
+o:[
+"A 檔案>建立新檢閱",
+"B 視窗>延伸功能>CS Review",
+"C 視窗>工作區",
+"D 檢視>螢幕模式"
+],
+a:["C"],
+ex:"Photoshop 工作區切換在「視窗 > 工作區」"
+},
 
-{ id:19,type:"multiple",q:"參考線錯誤?",o:["A 不可移動","B 不可改","C 可輸入","D 可清除"],a:["A","B"]},
-{ id:23,type:"multiple",q:"色版錯誤?",o:["A 黑白","B 不可濾鏡","C 不可載入","D RGB"],a:["B","C"]},
-{ id:32,type:"multiple",q:"網頁格式?",o:["A GIF","B JPG","C PNG","D PSD"],a:["A","B","C"]},
-{ id:39,type:"multiple",q:"色彩?",o:["A RGB","B 對比","C 混合","D 相似"],a:["A","B","D"]},
-{ id:43,type:"multiple",q:"設計因素?",o:["A 客戶","B 客群","C 趨勢","D 季節","E 風格"],a:["A","B"]},
-{ id:48,type:"multiple",q:"設計原理?",o:["A 重複","B 調和","C 留白","D 統一"],a:["A","B","D"]},
-{ id:50,type:"multiple",q:"初期交付?",o:["A 草稿","B 規格","C 軟體","D 回應","E 分析"],a:["A","B"]},
-{ id:51,type:"multiple",q:"設計師責任?",o:["A 預算","B 影像","C 客戶","D 範例"],a:["B","D"]},
+{
+id:2,type:"single",
+q:"在確認版面外觀時,該應用哪一個設計原則?",
+o:["A 強調","B 視野","C 三分法","D 影像方向"],
+a:["B"],
+ex:"視野原則用於檢視整體版面配置"
+},
+
+{
+id:3,type:"multiple",
+q:"「新增工作區域」可以儲存下列哪些設定(選二)?",
+o:["A 鍵盤快速鍵","B 顏色設定","C 選單","D 預設集管理員"],
+a:["A","C"],
+ex:"工作區可儲存鍵盤快捷鍵與選單配置"
+},
+
+{
+id:4,type:"single",
+q:"何種圖像格式不會受解析度大小影響影像品質?",
+o:[
+"A 以像素構成圖像",
+"B 連續像素解析度",
+"C 線條和曲線定義",
+"D 固定矩陣點"
+],
+a:["C"],
+ex:"向量圖不受解析度影響"
+},
+
+{
+id:5,type:"single",
+q:"構成點陣圖影像的最基本單位?",
+o:["A 點","B 像素","C 公厘","D 公分"],
+a:["B"],
+ex:"像素(pixel)為最小單位"
+},
+
+{
+id:6,type:"single",
+q:"下列敘述何者有誤?",
+o:[
+"A 向量適合簡單圖",
+"B 檔案容量不隨尺寸變",
+"C 向量與解析度相關",
+"D 點陣適合複雜影像"
+],
+a:["C"],
+ex:"向量圖為解析度無關"
+},
+
+{
+id:7,type:"single",
+q:"5000x3000 像素 200ppi 實際尺寸?",
+o:[
+"A 25x15 英吋",
+"B 15x25 英吋",
+"C 50x30 英吋",
+"D 5x3 英吋"
+],
+a:["A"],
+ex:"5000/200=25, 3000/200=15"
+},
+
+{
+id:19,type:"multiple",
+q:"以下對於參考線的描述哪些不正確(選二)?",
+o:[
+"A 不可移動",
+"B 不可更改樣式",
+"C 可輸入精確數值",
+"D 可清除"
+],
+a:["A","B"],
+ex:"參考線可以移動與改樣式"
+},
+
+{
+id:32,type:"multiple",
+q:"可用於網際網路的影像格式(選三)?",
+o:["A GIF","B JPG","C PNG","D PSD"],
+a:["A","B","C"],
+ex:"PSD 不適合網頁"
+},
+
+{
+id:39,type:"multiple",
+q:"關於色彩的陳述哪些合理(選三)?",
+o:[
+"A RGB為三原色",
+"B 互補色產生對比",
+"C 互補色由原色混合",
+"D 相似色為相鄰"
+],
+a:["A","B","D"],
+ex:"互補色不是由原色混合"
+},
 
 /* ===== 硬體 ===== */
 
-{ id:101,type:"single",q:"條碼?",o:["1輸入設備","2輸入媒體","3輸出設備","4輸出媒體"],a:["2"]},
-{ id:102,type:"single",q:"CPU錯?",o:["1控制","2I/O運算","3ALU","4記憶"],a:["2"]},
-{ id:103,type:"single",q:"二進位錯?",o:["A","B","C","D"],a:["2"]},
-{ id:104,type:"single",q:"開機元件?",o:["1DOS","2BIOS","3I/O","4RAM"],a:["2"]},
-{ id:105,type:"single",q:"32位址?",o:["1 512MB","2 1GB","3 2GB","4 4GB"],a:["4"]},
-{ id:106,type:"single",q:"揮發?",o:["1HDD","2Flash","3ROM","4RAM"],a:["4"]},
-{ id:107,type:"single",q:"雙核心?",o:["1HT","2Dual","3Super","4SIMD"],a:["2"]},
-{ id:108,type:"single",q:"超執行緒?",o:["1HT","2Dual","3Super","4SIMD"],a:["1"]},
+{
+id:101,type:"single",
+q:"條碼在資料處理中屬於?",
+o:["1輸入設備","2輸入媒體","3輸出設備","4輸出媒體"],
+a:["2"],
+ex:"條碼為輸入媒體"
+},
+
+{
+id:102,type:"single",
+q:"CPU敘述何者錯誤?",
+o:[
+"1控制單元負責控制",
+"2I/O負責運算",
+"3ALU負責運算",
+"4記憶單元儲存資料"
+],
+a:["2"],
+ex:"I/O 不負責運算"
+},
+
+{
+id:105,type:"single",
+q:"32位元位址匯流排可定出多少記憶體?",
+o:["1 512MB","2 1GB","3 2GB","4 4GB"],
+a:["4"],
+ex:"2^32 = 4GB"
+},
+
+{
+id:106,type:"single",
+q:"哪個是揮發性記憶體?",
+o:["1硬碟","2Flash","3ROM","4RAM"],
+a:["4"],
+ex:"RAM 斷電即失"
+},
 
 /* ===== 網路 ===== */
 
-{ id:201,type:"single",q:"WWW?",o:["1區域","2網際","3全球","4社群"],a:["3"]},
-{ id:202,type:"single",q:"IP錯?",o:["1","2","3","4"],a:["4"]},
-{ id:203,type:"single",q:"IPv錯?",o:["1錯","2轉換","3 128","4 32"],a:["1"]},
-{ id:204,type:"single",q:"Email層?",o:["1傳送","2交談","3表示","4應用"],a:["4"]},
-{ id:205,type:"single",q:"藍芽錯?",o:["1距離","2低功率","3頻段","4速率"],a:["4"]},
-{ id:210,type:"single",q:"星狀?",o:["1星","2環","3匯流","4網狀"],a:["1"]},
-{ id:213,type:"single",q:"最快?",o:["1同軸","2雙絞","3電話","4光纖"],a:["4"]},
+{
+id:201,type:"single",
+q:"WWW 中文名稱?",
+o:["1區域網路","2網際網路","3全球資訊網","4社群"],
+a:["3"],
+ex:"WWW = 全球資訊網"
+},
+
+{
+id:210,type:"single",
+q:"星狀拓樸?",
+o:["1星狀","2環狀","3匯流排","4網狀"],
+a:["1"],
+ex:"中心設備連接所有節點"
+},
+
+{
+id:213,type:"single",
+q:"最快傳輸媒體?",
+o:["1同軸","2雙絞","3電話線","4光纖"],
+a:["4"],
+ex:"光纖最快"
+},
 
 /* ===== 資安 ===== */
 
-{ id:301,type:"single",q:"犯罪錯?",o:["1易察覺","2隱藏","3高技術","4不同"],a:["1"]},
-{ id:302,type:"single",q:"備份?",o:["1過渡","2災前","3災中","4復原"],a:["2"]},
-{ id:303,type:"single",q:"白帽?",o:["1黑","2白","3蒐證","4密碼"],a:["2"]},
-{ id:304,type:"single",q:"蠕蟲?",o:["1Worm","2Trojan","3Backdoor","4Bomb"],a:["1"]},
-{ id:308,type:"single",q:"DoS?",o:["1Sniff","2Spoof","3Spam","4DoS"],a:["4"]},
-{ id:316,type:"single",q:"不感染?",o:["1巨集","2EXE","3系統","4文字"],a:["4"]},
-{ id:328,type:"single",q:"釣魚?",o:["1炸彈","2釣魚","3阻斷","4謠言"],a:["2"]},
+{
+id:301,type:"single",
+q:"電腦犯罪何者錯誤?",
+o:["1容易察覺","2手法隱藏","3高技術","4不同傳統"],
+a:["1"],
+ex:"電腦犯罪通常不易察覺"
+},
+
+{
+id:304,type:"single",
+q:"會自行繁殖病毒?",
+o:["1蠕蟲","2木馬","3後門","4炸彈"],
+a:["1"],
+ex:"Worm會自我複製"
+},
+
+{
+id:308,type:"single",
+q:"大量封包攻擊?",
+o:["1Sniffer","2Spoofing","3Spam","4DoS"],
+a:["4"],
+ex:"阻斷服務攻擊"
+},
+
+{
+id:316,type:"single",
+q:"較不會感染病毒?",
+o:["1巨集","2執行檔","3系統檔","4純文字"],
+a:["4"],
+ex:"純文字無執行能力"
+}
 
 ];
 
-/* ===== 顯示 ===== */
-function renderQuiz(){
-  const qDiv=document.getElementById("quiz");
+/* ===== 顯示題目 ===== */
+function renderQuiz() {
+  const container = document.getElementById("quiz");
 
-  questions.forEach((q,i)=>{
-    let html=`<div><h3>Q${q.id}. ${q.q}</h3>`;
-    q.o.forEach(opt=>{
-      const t=q.type==="multiple"?"checkbox":"radio";
-      html+=`<label><input type="${t}" name="q${i}" value="${opt[0]}">${opt}</label><br>`;
+  questions.forEach((q, i) => {
+    const div = document.createElement("div");
+    div.className = "question";
+
+    div.innerHTML = `<h3>Q${q.id}. ${q.q}</h3>`;
+
+    q.o.forEach(opt => {
+      const type = q.type === "multiple" ? "checkbox" : "radio";
+
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+
+      input.type = type;
+      input.name = "q" + i;
+      input.value = opt[0];
+
+      input.onclick = () => checkAnswer(i);
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(" " + opt));
+
+      div.appendChild(label);
+      div.appendChild(document.createElement("br"));
     });
-    html+="</div><hr>";
-    qDiv.innerHTML+=html;
+
+    const result = document.createElement("div");
+    result.id = "result" + i;
+    div.appendChild(result);
+
+    container.appendChild(div);
   });
 }
 
-/* ===== 判分 ===== */
-function submitQuiz(){
-  let score=0;
+/* ===== 即時判斷 ===== */
+function checkAnswer(i) {
+  const q = questions[i];
 
-  questions.forEach((q,i)=>{
-    const sel=[...document.querySelectorAll(`input[name=q${i}]:checked`)].map(e=>e.value).sort();
-    const ans=q.a.slice().sort();
+  const selected = [...document.querySelectorAll(`input[name=q${i}]:checked`)]
+    .map(el => el.value)
+    .sort();
 
-    if(JSON.stringify(sel)===JSON.stringify(ans)) score++;
-  });
+  const correct = q.a.slice().sort();
 
-  document.getElementById("result").innerText=`得分：${score}/${questions.length}`;
+  const res = document.getElementById("result" + i);
+
+  if (JSON.stringify(selected) === JSON.stringify(correct)) {
+    res.innerHTML = `<span class="correct">✔ 正確</span><br>${q.ex}`;
+  } else {
+    res.innerHTML = `<span class="wrong">✘ 錯誤</span><br>正確答案：${correct.join(",")}<br>${q.ex}`;
+  }
+}
+
+/* ===== 重置 ===== */
+function resetQuiz() {
+  location.reload();
 }
 
 renderQuiz();
