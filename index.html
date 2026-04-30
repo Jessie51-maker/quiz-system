@@ -1,19 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>線上測驗系統</title>
+<title>測驗系統（支援複選）</title>
 <style>
 body { font-family: Arial; padding:20px; }
 .question { margin-bottom:20px; }
 .correct { color:green; }
 .wrong { color:red; }
-button { padding:10px 20px; font-size:16px; }
 </style>
 </head>
 <body>
 
-<h1>📘 ACA 題庫測驗</h1>
+<h1>📘 題庫測驗（支援複選）</h1>
 
 <form id="quizForm"></form>
 
@@ -25,54 +25,14 @@ button { padding:10px 20px; font-size:16px; }
 
 const quizData = [
 {
-q:"1. 為了方便不同類型檔案切換不同工作區，可以從哪裡切換？",
-options:["A 檔案","B 視窗>延伸功能","C 視窗>工作區","D 檢視"],
-answer:"C"
+q:"1. 可儲存哪些設定（複選）？",
+options:["A 鍵盤","B 顏色","C 選單","D 管理員"],
+answer:["A","C"]   // 👈複選
 },
 {
-q:"2. 在確認版面外觀時應用哪個設計原則？",
-options:["A 強調","B 視野","C 三分法","D 影像方向"],
-answer:"B"
-},
-{
-q:"3. 何種圖像格式不受解析度影響？",
-options:["A 像素圖","B 解析度圖","C 向量圖","D 點陣圖"],
-answer:"C"
-},
-{
-q:"4. 點陣圖最基本單位？",
+q:"2. 點陣圖基本單位？",
 options:["A 點","B 像素","C 公分","D 公厘"],
-answer:"B"
-},
-{
-q:"5. 影像5000x3000、200ppi尺寸？",
-options:["A 25x15","B 15x25","C 50x30","D 5x3"],
-answer:"A"
-},
-{
-q:"6. Camera Raw檔案在哪建立？",
-options:["A Bridge","B Photoshop","C 相機","D 轉換"],
-answer:"C"
-},
-{
-q:"7. 哪個適合放大影像？",
-options:["A 最近像素","B 雙線性","C 銳利","D 平滑"],
-answer:"D"
-},
-{
-q:"8. 三分法是？",
-options:["A 三條線","B 九等分亂","C 三等分","D 九宮格"],
-answer:"D"
-},
-{
-q:"9. Photoshop遮色片黑色效果？",
-options:["A 顯示","B 隱藏","C 強調","D 羽化"],
-answer:"B"
-},
-{
-q:"10. 商業印刷解析度？",
-options:["A 72dpi","B 300dpi CMYK","C RGB","D 索引色"],
-answer:"B"
+answer:"B"  // 👈單選
 }
 ];
 
@@ -85,9 +45,13 @@ div.classList.add("question");
 let html = `<p>${q.q}</p>`;
 
 q.options.forEach(opt=>{
+
+// 判斷是否為複選
+let type = Array.isArray(q.answer) ? "checkbox" : "radio";
+
 html += `
 <label>
-<input type="radio" name="q${i}" value="${opt[0]}">
+<input type="${type}" name="q${i}" value="${opt[0]}">
 ${opt}
 </label><br>`;
 });
@@ -100,10 +64,27 @@ function submitQuiz(){
 let score = 0;
 
 quizData.forEach((q,i)=>{
-let ans = document.querySelector(`input[name="q${i}"]:checked`);
-if(ans && ans.value === q.answer){
+
+let selected = document.querySelectorAll(`input[name="q${i}"]:checked`);
+let values = Array.from(selected).map(el=>el.value);
+
+// 單選
+if(!Array.isArray(q.answer)){
+if(values[0] === q.answer){
 score++;
 }
+}
+
+// 複選（完全一致才算對）
+else{
+let correct = q.answer.sort().join("");
+let user = values.sort().join("");
+
+if(correct === user){
+score++;
+}
+}
+
 });
 
 document.getElementById("result").innerText =
