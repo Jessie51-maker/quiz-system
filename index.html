@@ -3,94 +3,111 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>測驗系統（支援複選）</title>
+<title>完整題庫測驗系統</title>
 <style>
-body { font-family: Arial; padding:20px; }
-.question { margin-bottom:20px; }
-.correct { color:green; }
-.wrong { color:red; }
+body { font-family: Arial; padding: 20px; }
+h3 { margin-bottom: 5px; }
+.correct { color: green; }
+.wrong { color: red; }
 </style>
 </head>
+
 <body>
 
-<h1>📘 題庫測驗（支援複選）</h1>
-
-<form id="quizForm"></form>
-
-<button onclick="submitQuiz()">提交答案</button>
-
+<h1>完整題庫測驗</h1>
+<div id="quiz"></div>
+<button onclick="submitQuiz()">交卷</button>
 <h2 id="result"></h2>
 
 <script>
 
-const quizData = [
-{
-q:"1. 可儲存哪些設定（複選）？",
-options:["A 鍵盤","B 顏色","C 選單","D 管理員"],
-answer:["A","C"]   // 👈複選
-},
-{
-q:"2. 點陣圖基本單位？",
-options:["A 點","B 像素","C 公分","D 公厘"],
-answer:"B"  // 👈單選
-}
+/* ===== 完整題庫（已去重複＋分類）===== */
+const questions = [
+
+/* ===== Photoshop ===== */
+
+{ id:1,type:"single",q:"切換工作區位置?",o:["A 檔案","B 延伸","C 工作區","D 螢幕"],a:["C"]},
+{ id:2,type:"single",q:"版面外觀原則?",o:["A 強調","B 視野","C 三分法","D 方向"],a:["B"]},
+{ id:3,type:"multiple",q:"工作區儲存?",o:["A 快捷鍵","B 顏色","C 選單","D 預設"],a:["A","C"]},
+{ id:4,type:"single",q:"不受解析度?",o:["A 像素","B 解析","C 向量","D 點"],a:["C"]},
+{ id:5,type:"single",q:"點陣單位?",o:["A 點","B 像素","C 公厘","D 公分"],a:["B"]},
+{ id:6,type:"single",q:"錯誤敘述?",o:["A 向量適單純","B 容量不變","C 與解析度相關","D 點陣適複雜"],a:["C"]},
+{ id:7,type:"single",q:"尺寸?",o:["A 25x15","B 15x25","C 50x30","D 5x3"],a:["A"]},
+{ id:8,type:"single",q:"120lpi?",o:["A300","B240","C150","D120"],a:["B"]},
+{ id:9,type:"single",q:"印刷?",o:["A72dpi","B300 CMYK","C RGB72","D index"],a:["B"]},
+
+{ id:19,type:"multiple",q:"參考線錯誤?",o:["A 不可移動","B 不可改","C 可輸入","D 可清除"],a:["A","B"]},
+{ id:23,type:"multiple",q:"色版錯誤?",o:["A 黑白","B 不可濾鏡","C 不可載入","D RGB"],a:["B","C"]},
+{ id:32,type:"multiple",q:"網頁格式?",o:["A GIF","B JPG","C PNG","D PSD"],a:["A","B","C"]},
+{ id:39,type:"multiple",q:"色彩?",o:["A RGB","B 對比","C 混合","D 相似"],a:["A","B","D"]},
+{ id:43,type:"multiple",q:"設計因素?",o:["A 客戶","B 客群","C 趨勢","D 季節","E 風格"],a:["A","B"]},
+{ id:48,type:"multiple",q:"設計原理?",o:["A 重複","B 調和","C 留白","D 統一"],a:["A","B","D"]},
+{ id:50,type:"multiple",q:"初期交付?",o:["A 草稿","B 規格","C 軟體","D 回應","E 分析"],a:["A","B"]},
+{ id:51,type:"multiple",q:"設計師責任?",o:["A 預算","B 影像","C 客戶","D 範例"],a:["B","D"]},
+
+/* ===== 硬體 ===== */
+
+{ id:101,type:"single",q:"條碼?",o:["1輸入設備","2輸入媒體","3輸出設備","4輸出媒體"],a:["2"]},
+{ id:102,type:"single",q:"CPU錯?",o:["1控制","2I/O運算","3ALU","4記憶"],a:["2"]},
+{ id:103,type:"single",q:"二進位錯?",o:["A","B","C","D"],a:["2"]},
+{ id:104,type:"single",q:"開機元件?",o:["1DOS","2BIOS","3I/O","4RAM"],a:["2"]},
+{ id:105,type:"single",q:"32位址?",o:["1 512MB","2 1GB","3 2GB","4 4GB"],a:["4"]},
+{ id:106,type:"single",q:"揮發?",o:["1HDD","2Flash","3ROM","4RAM"],a:["4"]},
+{ id:107,type:"single",q:"雙核心?",o:["1HT","2Dual","3Super","4SIMD"],a:["2"]},
+{ id:108,type:"single",q:"超執行緒?",o:["1HT","2Dual","3Super","4SIMD"],a:["1"]},
+
+/* ===== 網路 ===== */
+
+{ id:201,type:"single",q:"WWW?",o:["1區域","2網際","3全球","4社群"],a:["3"]},
+{ id:202,type:"single",q:"IP錯?",o:["1","2","3","4"],a:["4"]},
+{ id:203,type:"single",q:"IPv錯?",o:["1錯","2轉換","3 128","4 32"],a:["1"]},
+{ id:204,type:"single",q:"Email層?",o:["1傳送","2交談","3表示","4應用"],a:["4"]},
+{ id:205,type:"single",q:"藍芽錯?",o:["1距離","2低功率","3頻段","4速率"],a:["4"]},
+{ id:210,type:"single",q:"星狀?",o:["1星","2環","3匯流","4網狀"],a:["1"]},
+{ id:213,type:"single",q:"最快?",o:["1同軸","2雙絞","3電話","4光纖"],a:["4"]},
+
+/* ===== 資安 ===== */
+
+{ id:301,type:"single",q:"犯罪錯?",o:["1易察覺","2隱藏","3高技術","4不同"],a:["1"]},
+{ id:302,type:"single",q:"備份?",o:["1過渡","2災前","3災中","4復原"],a:["2"]},
+{ id:303,type:"single",q:"白帽?",o:["1黑","2白","3蒐證","4密碼"],a:["2"]},
+{ id:304,type:"single",q:"蠕蟲?",o:["1Worm","2Trojan","3Backdoor","4Bomb"],a:["1"]},
+{ id:308,type:"single",q:"DoS?",o:["1Sniff","2Spoof","3Spam","4DoS"],a:["4"]},
+{ id:316,type:"single",q:"不感染?",o:["1巨集","2EXE","3系統","4文字"],a:["4"]},
+{ id:328,type:"single",q:"釣魚?",o:["1炸彈","2釣魚","3阻斷","4謠言"],a:["2"]},
+
 ];
 
-const form = document.getElementById("quizForm");
+/* ===== 顯示 ===== */
+function renderQuiz(){
+  const qDiv=document.getElementById("quiz");
 
-quizData.forEach((q,i)=>{
-let div = document.createElement("div");
-div.classList.add("question");
+  questions.forEach((q,i)=>{
+    let html=`<div><h3>Q${q.id}. ${q.q}</h3>`;
+    q.o.forEach(opt=>{
+      const t=q.type==="multiple"?"checkbox":"radio";
+      html+=`<label><input type="${t}" name="q${i}" value="${opt[0]}">${opt}</label><br>`;
+    });
+    html+="</div><hr>";
+    qDiv.innerHTML+=html;
+  });
+}
 
-let html = `<p>${q.q}</p>`;
-
-q.options.forEach(opt=>{
-
-// 判斷是否為複選
-let type = Array.isArray(q.answer) ? "checkbox" : "radio";
-
-html += `
-<label>
-<input type="${type}" name="q${i}" value="${opt[0]}">
-${opt}
-</label><br>`;
-});
-
-div.innerHTML = html;
-form.appendChild(div);
-});
-
+/* ===== 判分 ===== */
 function submitQuiz(){
-let score = 0;
+  let score=0;
 
-quizData.forEach((q,i)=>{
+  questions.forEach((q,i)=>{
+    const sel=[...document.querySelectorAll(`input[name=q${i}]:checked`)].map(e=>e.value).sort();
+    const ans=q.a.slice().sort();
 
-let selected = document.querySelectorAll(`input[name="q${i}"]:checked`);
-let values = Array.from(selected).map(el=>el.value);
+    if(JSON.stringify(sel)===JSON.stringify(ans)) score++;
+  });
 
-// 單選
-if(!Array.isArray(q.answer)){
-if(values[0] === q.answer){
-score++;
-}
+  document.getElementById("result").innerText=`得分：${score}/${questions.length}`;
 }
 
-// 複選（完全一致才算對）
-else{
-let correct = q.answer.sort().join("");
-let user = values.sort().join("");
-
-if(correct === user){
-score++;
-}
-}
-
-});
-
-document.getElementById("result").innerText =
-`你的分數：${score} / ${quizData.length}`;
-}
-
+renderQuiz();
 </script>
 
 </body>
