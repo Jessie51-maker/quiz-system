@@ -1,1 +1,139 @@
+<!DOCTYPE html>
 
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>線上複習系統</title>
+<style>
+body {
+  font-family: Arial;
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+h1 { text-align: center; }
+button {
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.correct { color: green; }
+.wrong { color: red; }
+.box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 線上複習系統</h1>
+
+<div class="box">
+  <h2 id="question"></h2>
+  <div id="options"></div>
+</div>
+
+<br>
+
+<button onclick="submitAnswer()">提交答案</button> <button onclick="nextQuestion()">下一題</button> <button onclick="showWrong()">只看錯題</button> <button onclick="resetWrong()">清除錯題</button>
+
+<p id="result"></p>
+
+<script>
+// ===== 題庫 =====
+let originalData = [
+{"id":1,"question":"為了方便不同類型檔案切換不同工作區,還可以從哪裡切換?","options":["檔案>建立新檢閱","視窗>延伸功能>CS Review","視窗>工作區","檢視>螢幕模式"],"answer":[2],"explanation":"從視窗>工作區"},
+{"id":2,"question":"確認版面外觀應用哪個原則?","options":["強調","視野","三分法","影像方向"],"answer":[1],"explanation":"視野影響整體觀看"},
+{"id":3,"question":"新增工作區域可儲存哪些設定(選二)?","options":["鍵盤快速鍵","顏色設定","選單","預設集管理員"],"answer":[0,2],"explanation":"鍵盤與選單"},
+{"id":4,"question":"哪種圖像不受解析度影響?","options":["像素","連續像素","線條曲線","固定矩陣"],"answer":[2],"explanation":"向量圖"},
+{"id":5,"question":"點陣圖基本單位?","options":["點","像素","公厘","公分"],"answer":[1],"explanation":"pixel"},
+{"id":6,"question":"哪個錯誤?","options":["向量適合簡單","檔案不隨尺寸變","向量與解析度相關","點陣適合複雜"],"answer":[2],"explanation":"向量不受解析度"},
+{"id":7,"question":"5000x3000像素200ppi尺寸?","options":["25x15英吋","15x25英吋","50x30英吋","5x3英吋"],"answer":[0],"explanation":"5000/200=25"},
+{"id":8,"question":"120lpi需多少dpi?","options":["300","240","150","120"],"answer":[1],"explanation":"約2倍"},
+{"id":9,"question":"印刷用?","options":["Lab72dpi","CMYK300dpi","RGB72dpi","索引300dpi"],"answer":[1],"explanation":"CMYK300dpi"},
+{"id":10,"question":"未壓縮格式?","options":["JPEG","掃描影像","靜態視訊","Camera RAW"],"answer":[3],"explanation":"RAW未壓縮"},
+{"id":11,"question":"Bridge主要功能?","options":["建立文件","整合影像","管理檔案","轉換格式"],"answer":[2],"explanation":"Bridge用來管理"},
+{"id":12,"question":"負片如何輸入Photoshop?","options":["開啟TIFF","輸入照片","輸入設備","開啟RAW"],"answer":[2],"explanation":"需輸入設備"},
+{"id":13,"question":"Camera Raw像什麼?","options":["負片","後處理","修片","黑白"],"answer":[0],"explanation":"像數位負片"},
+{"id":14,"question":"Camera Raw如何建立?","options":["Bridge","Photoshop","數位相機","轉換"],"answer":[2],"explanation":"相機建立"},
+{"id":15,"question":"轉換幻燈片最重要?","options":["解析度","時間","不傷原稿","典藏"],"answer":[2],"explanation":"保護原稿"},
+{"id":16,"question":"放大影像用?","options":["縱橫","最接近像素","更銳利","更平滑"],"answer":[3],"explanation":"放大用平滑"},
+{"id":17,"question":"縮放維持比例?","options":["Ctrl","拖拉","Shift","旋轉"],"answer":[2],"explanation":"Shift保持比例"},
+{"id":18,"question":"三分法?","options":["三條線","多條線","三等分","九宮格"],"answer":[3],"explanation":"九宮格"},
+{"id":19,"question":"參考線錯誤(選二)?","options":["不可移動","不可改色","可輸入數值","可清除"],"answer":[0,1],"explanation":"前兩錯"},
+{"id":20,"question":"相交選取快捷鍵?","options":["Ctrl+Shift","Shift","Alt","Shift+Alt"],"answer":[3],"explanation":"Shift+Alt"}
+];
+
+// ===== 系統邏輯 =====
+let quizData = [...originalData];
+let current = 0;
+let selected = [];
+let wrong = JSON.parse(localStorage.getItem("wrong") || "[]");
+
+function loadQuestion(){
+  selected = [];
+  let q = quizData[current];
+  document.getElementById("question").innerText = `第 ${current+1} 題：` + q.question;
+
+  let html = "";
+  q.options.forEach((opt,i)=>{
+    html += `<label><input type="checkbox" onclick="toggle(${i})"> ${opt}</label><br>`;
+  });
+
+  document.getElementById("options").innerHTML = html;
+  document.getElementById("result").innerText = "";
+}
+
+function toggle(i){
+  if(selected.includes(i)){
+    selected = selected.filter(x=>x!==i);
+  }else{
+    selected.push(i);
+  }
+}
+
+function submitAnswer(){
+  let q = quizData[current];
+  let correct = JSON.stringify(selected.sort()) === JSON.stringify(q.answer.sort());
+
+  if(correct){
+    result.innerHTML = "<span class='correct'>✅ 正確</span><br>" + q.explanation;
+  }else{
+    result.innerHTML = "<span class='wrong'>❌ 錯誤</span><br>" + q.explanation;
+    wrong.push(q);
+    localStorage.setItem("wrong", JSON.stringify(wrong));
+  }
+}
+
+function nextQuestion(){
+  current = (current + 1) % quizData.length;
+  loadQuestion();
+}
+
+function showWrong(){
+  if(wrong.length === 0){
+    alert("目前沒有錯題");
+    return;
+  }
+  quizData = wrong;
+  current = 0;
+  loadQuestion();
+}
+
+function resetWrong(){
+  localStorage.removeItem("wrong");
+  wrong = [];
+  quizData = [...originalData];
+  alert("錯題已清除");
+  loadQuestion();
+}
+
+// 啟動
+loadQuestion();
+</script>
+
+</body>
+</html>
