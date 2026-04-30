@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>題庫練習系統</title>
+<title>題庫練習</title>
 <style>
 body { font-family: Arial; padding: 20px; }
-.question { margin-bottom: 20px; }
-.correct { color: green; }
-.wrong { color: red; }
-button { margin-top: 20px; }
+.question { margin-bottom: 25px; padding: 10px; border: 1px solid #ccc; }
+.option { cursor: pointer; margin: 5px 0; padding: 5px; }
+.option:hover { background: #eee; }
+.correct { background: #c8f7c5; }
+.wrong { background: #f7c5c5; }
+.explain { margin-top: 10px; color: #333; }
+button { margin-top: 20px; padding: 10px 20px; }
 </style>
 </head>
 
@@ -17,286 +19,189 @@ button { margin-top: 20px; }
 
 <h1>題庫練習</h1>
 <div id="quiz"></div>
-<button onclick="resetQuiz()">重新練習</button>
+<button onclick="location.reload()">重新練習</button>
 
 <script>
-const questions = [
-
-/* ===== Photoshop ===== */
-
+const data = [
+/* ===================== Photoshop 題庫 ===================== */
 {
-id:1,type:"single",
-q:"為了方便不同類型檔案切換不同工作區,除了利用上方的「工作區切換器」中選取預設的工作區之外,還可以從哪裡切換?",
-o:[
-"A 檔案>建立新檢閱",
-"B 視窗>延伸功能>CS Review",
-"C 視窗>工作區",
-"D 檢視>螢幕模式"
-],
-a:["C"],
-ex:"Photoshop 工作區切換在「視窗 > 工作區」"
+q:"1. 為了方便不同類型檔案切換不同工作區，除了利用上方的「工作區切換器」中選取預設的工作區之外，還可以從哪裡切換?",
+options:["檔案>建立新檢閱","視窗>延伸功能>CS Review","視窗>工作區","檢視>螢幕模式"],
+answer:[2],
+explain:"透過「視窗 > 工作區」切換"
+},
+{
+q:"3. 「新增工作區域」可以儲存哪些設定(選二)?",
+options:["鍵盤快速鍵","顏色設定","選單","預設集管理員"],
+answer:[0,2],
+explain:"可儲存鍵盤與選單"
+},
+{
+q:"19. 以下對於參考線的描述哪些不正確(選二)?",
+options:["不可移動","不可改顏色","可輸入數值","可清除"],
+answer:[0,1],
+explain:"參考線可移動也可改顏色"
+},
+{
+q:"23. 色版描述哪些錯誤(選二)?",
+options:["會變黑白","不可製作濾鏡","不可載入選取","RGB預設"],
+answer:[1,2],
+explain:"色版可套濾鏡也可載入"
+},
+{
+q:"32. 可用於網路的影像格式(選三)?",
+options:["GIF","JPG","PNG","PSD"],
+answer:[0,1,2],
+explain:"PSD不適合網頁"
+},
+{
+q:"39. 關於色彩哪些正確(選三)?",
+options:["RGB是三原色","互補色產生對比","互補色由原色混合","相似色相鄰"],
+answer:[0,1,3],
+explain:"互補色不是原色混合"
+},
+{
+q:"43. 設計專案關鍵因素(選二)?",
+options:["客戶目標","目標客戶","設計趨勢","季節","風格"],
+answer:[0,1],
+explain:"以客戶與受眾為主"
+},
+{
+q:"48. 設計原理(選三)?",
+options:["重複","調和","留白","統一"],
+answer:[0,1,3],
+explain:"留白不是原理分類"
+},
+{
+q:"49. Photoshop 專案必要細節(選二)?",
+options:["範圍","合約","時間","廣告"],
+answer:[0,2],
+explain:"範圍與時程必要"
+},
+{
+q:"50. 起始階段交付項目(選二)?",
+options:["草稿","規格","程式","回應","分析"],
+answer:[0,1],
+explain:"初期為概念與規格"
+},
+{
+q:"51. 設計師責任(選二)?",
+options:["預算","影像處理","分析","範例"],
+answer:[1,3],
+explain:"設計師負責影像與示意"
+},
+{
+q:"53. 生產階段責任(選二)?",
+options:["預算","影像處理","分析","範例"],
+answer:[1,3],
+explain:"與實作相關"
+},
+{
+q:"58. 色彩正確敘述(選三)?",
+options:["RGB","互補色對比","互補混合","類似色相鄰","類似對立"],
+answer:[0,1,3],
+explain:"互補不是混合"
+},
+{
+q:"65. 設計影響因素(選二)?",
+options:["客戶","趨勢","對象","季節","風格"],
+answer:[0,2],
+explain:"同43題"
 },
 
+/* ===================== 硬體 ===================== */
 {
-id:2,type:"single",
-q:"在確認版面外觀時,該應用哪一個設計原則?",
-o:["A 強調","B 視野","C 三分法","D 影像方向"],
-a:["B"],
-ex:"視野原則用於檢視整體版面配置"
+q:"1. 條碼屬於?",
+options:["輸入設備","輸入媒體","輸出設備","輸出媒體"],
+answer:[1],
+explain:"條碼是資料媒體"
+},
+{
+q:"2. CPU敘述錯誤?",
+options:["CU控制","IO運算","ALU運算","記憶體儲存"],
+answer:[1],
+explain:"運算是ALU"
 },
 
+/* ===================== 網路 ===================== */
 {
-id:3,type:"multiple",
-q:"「新增工作區域」可以儲存下列哪些設定(選二)?",
-o:["A 鍵盤快速鍵","B 顏色設定","C 選單","D 預設集管理員"],
-a:["A","C"],
-ex:"工作區可儲存鍵盤快捷鍵與選單配置"
+q:"1. Internet標準機構?",
+options:["IETF","IEEE","ANSI","ISO"],
+answer:[0],
+explain:"IETF負責網路標準"
+},
+{
+q:"7. 協定錯誤?",
+options:["TCP可靠","HTTP安全","HTTP用TCP","UDP不可靠"],
+answer:[1],
+explain:"HTTP不是安全協定"
 },
 
+/* ===================== 資安 ===================== */
 {
-id:4,type:"single",
-q:"何種圖像格式不會受解析度大小影響影像品質?",
-o:[
-"A 以像素構成圖像",
-"B 連續像素解析度",
-"C 線條和曲線定義",
-"D 固定矩陣點"
-],
-a:["C"],
-ex:"向量圖不受解析度影響"
+q:"1. 電腦犯罪錯誤?",
+options:["容易察覺","隱密","高技術","不同"],
+answer:[0],
+explain:"通常不易察覺"
 },
-
 {
-id:5,type:"single",
-q:"構成點陣圖影像的最基本單位?",
-o:["A 點","B 像素","C 公厘","D 公分"],
-a:["B"],
-ex:"像素(pixel)為最小單位"
-},
-
-{
-id:6,type:"single",
-q:"下列敘述何者有誤?",
-o:[
-"A 向量適合簡單圖",
-"B 檔案容量不隨尺寸變",
-"C 向量與解析度相關",
-"D 點陣適合複雜影像"
-],
-a:["C"],
-ex:"向量圖為解析度無關"
-},
-
-{
-id:7,type:"single",
-q:"5000x3000 像素 200ppi 實際尺寸?",
-o:[
-"A 25x15 英吋",
-"B 15x25 英吋",
-"C 50x30 英吋",
-"D 5x3 英吋"
-],
-a:["A"],
-ex:"5000/200=25, 3000/200=15"
-},
-
-{
-id:19,type:"multiple",
-q:"以下對於參考線的描述哪些不正確(選二)?",
-o:[
-"A 不可移動",
-"B 不可更改樣式",
-"C 可輸入精確數值",
-"D 可清除"
-],
-a:["A","B"],
-ex:"參考線可以移動與改樣式"
-},
-
-{
-id:32,type:"multiple",
-q:"可用於網際網路的影像格式(選三)?",
-o:["A GIF","B JPG","C PNG","D PSD"],
-a:["A","B","C"],
-ex:"PSD 不適合網頁"
-},
-
-{
-id:39,type:"multiple",
-q:"關於色彩的陳述哪些合理(選三)?",
-o:[
-"A RGB為三原色",
-"B 互補色產生對比",
-"C 互補色由原色混合",
-"D 相似色為相鄰"
-],
-a:["A","B","D"],
-ex:"互補色不是由原色混合"
-},
-
-/* ===== 硬體 ===== */
-
-{
-id:101,type:"single",
-q:"條碼在資料處理中屬於?",
-o:["1輸入設備","2輸入媒體","3輸出設備","4輸出媒體"],
-a:["2"],
-ex:"條碼為輸入媒體"
-},
-
-{
-id:102,type:"single",
-q:"CPU敘述何者錯誤?",
-o:[
-"1控制單元負責控制",
-"2I/O負責運算",
-"3ALU負責運算",
-"4記憶單元儲存資料"
-],
-a:["2"],
-ex:"I/O 不負責運算"
-},
-
-{
-id:105,type:"single",
-q:"32位元位址匯流排可定出多少記憶體?",
-o:["1 512MB","2 1GB","3 2GB","4 4GB"],
-a:["4"],
-ex:"2^32 = 4GB"
-},
-
-{
-id:106,type:"single",
-q:"哪個是揮發性記憶體?",
-o:["1硬碟","2Flash","3ROM","4RAM"],
-a:["4"],
-ex:"RAM 斷電即失"
-},
-
-/* ===== 網路 ===== */
-
-{
-id:201,type:"single",
-q:"WWW 中文名稱?",
-o:["1區域網路","2網際網路","3全球資訊網","4社群"],
-a:["3"],
-ex:"WWW = 全球資訊網"
-},
-
-{
-id:210,type:"single",
-q:"星狀拓樸?",
-o:["1星狀","2環狀","3匯流排","4網狀"],
-a:["1"],
-ex:"中心設備連接所有節點"
-},
-
-{
-id:213,type:"single",
-q:"最快傳輸媒體?",
-o:["1同軸","2雙絞","3電話線","4光纖"],
-a:["4"],
-ex:"光纖最快"
-},
-
-/* ===== 資安 ===== */
-
-{
-id:301,type:"single",
-q:"電腦犯罪何者錯誤?",
-o:["1容易察覺","2手法隱藏","3高技術","4不同傳統"],
-a:["1"],
-ex:"電腦犯罪通常不易察覺"
-},
-
-{
-id:304,type:"single",
-q:"會自行繁殖病毒?",
-o:["1蠕蟲","2木馬","3後門","4炸彈"],
-a:["1"],
-ex:"Worm會自我複製"
-},
-
-{
-id:308,type:"single",
-q:"大量封包攻擊?",
-o:["1Sniffer","2Spoofing","3Spam","4DoS"],
-a:["4"],
-ex:"阻斷服務攻擊"
-},
-
-{
-id:316,type:"single",
-q:"較不會感染病毒?",
-o:["1巨集","2執行檔","3系統檔","4純文字"],
-a:["4"],
-ex:"純文字無執行能力"
+q:"5. 加密錯誤?",
+options:["對稱快","非對稱安全","RSA對稱","有公私鑰"],
+answer:[2],
+explain:"RSA是非對稱"
 }
-
 ];
 
-/* ===== 顯示題目 ===== */
-function renderQuiz() {
-  const container = document.getElementById("quiz");
+/* ===================== 渲染 ===================== */
+const quiz = document.getElementById("quiz");
 
-  questions.forEach((q, i) => {
-    const div = document.createElement("div");
-    div.className = "question";
+data.forEach((item, index) => {
+  const div = document.createElement("div");
+  div.className = "question";
 
-    div.innerHTML = `<h3>Q${q.id}. ${q.q}</h3>`;
+  const title = document.createElement("h3");
+  title.innerText = item.q;
+  div.appendChild(title);
 
-    q.o.forEach(opt => {
-      const type = q.type === "multiple" ? "checkbox" : "radio";
+  const selected = new Set();
 
-      const label = document.createElement("label");
-      const input = document.createElement("input");
+  item.options.forEach((opt, i) => {
+    const btn = document.createElement("div");
+    btn.className = "option";
+    btn.innerText = opt;
 
-      input.type = type;
-      input.name = "q" + i;
-      input.value = opt[0];
+    btn.onclick = () => {
+      if(item.answer.length > 1){
+        if(selected.has(i)) selected.delete(i);
+        else selected.add(i);
+      }else{
+        selected.clear();
+        selected.add(i);
+      }
 
-      input.onclick = () => checkAnswer(i);
+      // reset
+      div.querySelectorAll(".option").forEach(o=>o.classList.remove("correct","wrong"));
 
-      label.appendChild(input);
-      label.appendChild(document.createTextNode(" " + opt));
+      // show result
+      div.querySelectorAll(".option").forEach((o, idx)=>{
+        if(item.answer.includes(idx)) o.classList.add("correct");
+        if(selected.has(idx) && !item.answer.includes(idx)) o.classList.add("wrong");
+      });
 
-      div.appendChild(label);
-      div.appendChild(document.createElement("br"));
-    });
+      // explain
+      if(!div.querySelector(".explain")){
+        const exp = document.createElement("div");
+        exp.className="explain";
+        exp.innerText="解析："+item.explain;
+        div.appendChild(exp);
+      }
+    };
 
-    const result = document.createElement("div");
-    result.id = "result" + i;
-    div.appendChild(result);
-
-    container.appendChild(div);
+    div.appendChild(btn);
   });
-}
 
-/* ===== 即時判斷 ===== */
-function checkAnswer(i) {
-  const q = questions[i];
-
-  const selected = [...document.querySelectorAll(`input[name=q${i}]:checked`)]
-    .map(el => el.value)
-    .sort();
-
-  const correct = q.a.slice().sort();
-
-  const res = document.getElementById("result" + i);
-
-  if (JSON.stringify(selected) === JSON.stringify(correct)) {
-    res.innerHTML = `<span class="correct">✔ 正確</span><br>${q.ex}`;
-  } else {
-    res.innerHTML = `<span class="wrong">✘ 錯誤</span><br>正確答案：${correct.join(",")}<br>${q.ex}`;
-  }
-}
-
-/* ===== 重置 ===== */
-function resetQuiz() {
-  location.reload();
-}
-
-renderQuiz();
+  quiz.appendChild(div);
+});
 </script>
 
 </body>
